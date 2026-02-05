@@ -2,6 +2,7 @@ import default_image from "../assets/messi.jpg"
 import bg_image from "../assets/bg.jpg"
 import { RiAiGenerate } from "react-icons/ri";
 import { useRef, useState } from "react";
+import { FiDownload } from "react-icons/fi";
 
 
 const ImageGenerator = () => {
@@ -45,6 +46,18 @@ const ImageGenerator = () => {
         }
     };
 
+    // for downloading the images that is generated
+    const downloadImage = () => {
+        if (image_url === "/" || image_url === default_image) return;
+
+        const link = document.createElement("a");
+        link.href = image_url;
+        link.download = `generated-image-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <div className="relative min-h-screen flex items-center justify-center">
 
@@ -64,7 +77,7 @@ const ImageGenerator = () => {
 
                     {/* Header */}
                     <div className="text-3xl font-bold flex justify-center">
-                        <span className="mr-2 bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
+                        <span className="mr-2 bg-linear-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent">
                             Image
                         </span>
                         <span className="bg-linear-to-r from-cyan-500 to-indigo-400 bg-clip-text text-transparent">
@@ -73,11 +86,27 @@ const ImageGenerator = () => {
                     </div>
 
                     {/* Image */}
-                    <img
-                        className="rounded-md w-full object-cover min-h-[250px]"
-                        src={image_url === "/" ? default_image : image_url}
-                        alt=""
-                    />
+                    {/* Image Container */}
+                    <div className="relative group overflow-hidden rounded-md">
+                        <img
+                            className="w-full object-cover min-h-62.5"
+                            src={image_url === "/" ? default_image : image_url}
+                            alt="Generated content"
+                        />
+
+                        {/* Download Button - Shows on Hover */}
+                        {image_url !== "/" && !loading && (
+                            <button
+                                onClick={downloadImage}
+                                className="absolute top-3 right-3 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full 
+                       transition-all duration-300 opacity-0 group-hover:opacity-100 backdrop-blur-sm 
+                       cursor-pointer border border-white/20"
+                                title="Download Image"
+                            >
+                                <FiDownload size={22} />
+                            </button>
+                        )}
+                    </div>
 
                     <div className="relative w-full">
                         <input
